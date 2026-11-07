@@ -1,0 +1,6 @@
+{
+  "name": "VoltPulse BLE",
+  "description": "Ultra-low power native Android background service transmitting real-time battery status to ESP32 over Bluetooth Low Energy.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

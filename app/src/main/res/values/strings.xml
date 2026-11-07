@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">VoltPulse BLE</string>
+    <string name="service_notification_title">Battery Saver Service Running</string>
+    <string name="service_notification_text">Transmitting battery telemetry over BLE</string>
+    <string name="service_notification_channel_name">Battery BLE Background Monitor</string>
+    <string name="service_notification_channel_desc">Shows ongoing status of battery BLE telemetry service</string>
+    <string name="status_connected">Connected</string>
+    <string name="status_disconnected">Disconnected</string>
+    <string name="status_scanning">Scanning for ESP32…</string>
+    <string name="status_connecting">Connecting…</string>
+    <string name="status_stopped">Service Stopped</string>
+</resources>

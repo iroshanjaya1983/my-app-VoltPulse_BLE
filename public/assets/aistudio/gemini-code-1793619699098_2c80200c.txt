@@ -1,0 +1,54 @@
+You are an expert mobile developer specializing in native Android development (Kotlin), legacy and modern Android SDK compatibility (minSdk 21 / Android 5.0 Lollipop through Android 15), background services, adaptive UI design, and Bluetooth Low Energy (BLE) APIs[cite: 1]. Generate complete, production-ready, fully implemented, and non-truncated Kotlin code for a lightweight battery monitoring application[cite: 1].
+
+---
+
+### GOAL
+Build an ultra-low power native Android app in Kotlin that runs continuously in the background (as an Android Foreground Service with a persistent notification) until manually stopped[cite: 1]. The app retrieves real-time battery percentage (%) and battery voltage (mV), then transmits this data over BLE to an ESP32 hardware controller[cite: 1]. The application must be fully production-ready, engineered to work on older Android devices (minSdk 21 / Android 5.0+), and adapt seamlessly to any screen size or resolution (from small legacy 4-inch screens to high-density 4K displays).
+
+---
+
+### TECHNICAL SPECIFICATIONS & ARCHITECTURE
+
+1. Compatibility & Power Optimization (minSdk 21 to targetSdk 35):
+   * Implement a native Android `ForegroundService` with a persistent, non-dismissible notification ("Battery Saver Service Running")[cite: 1].
+   * Support legacy vs. modern foreground service declarations (e.g., `foregroundServiceType="connectedDevice"` for Android 14+ with graceful fallback for pre-Android 14 devices).
+   * Include logic to prompt the user for battery optimization exclusion (`ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`) to prevent OEM background kills on strict legacy vendor ROMs (MIUI, EMUI, Samsung, Sony).
+   * Optimize for minimal battery drain and memory footprint:
+     - Set data broadcast frequency to every 30 seconds or when the battery percentage changes by ±1%[cite: 1].
+     - Avoid acquiring unnecessary CPU WakeLocks[cite: 1].
+
+2. Battery Data Acquisition:
+   * Register a native `BroadcastReceiver` listening to `Intent.ACTION_BATTERY_CHANGED`[cite: 1].
+   * Extract real-time battery stats directly using `BatteryManager.EXTRA_LEVEL`, `BatteryManager.EXTRA_SCALE` for percentage, and `BatteryManager.EXTRA_VOLTAGE` for raw millivolts (mV)[cite: 1].
+
+3. Backward-Compatible BLE Communication:
+   * Act as a BLE Central device using `BluetoothAdapter` and `BluetoothLeScanner` (with fallback scan callbacks compatible with Android 5.0 / API 21)[cite: 1].
+   * Connect to an ESP32 BLE GATT Server with Service UUID: `19B10000-E8F2-537E-4F6C-D104768A1214`[cite: 1].
+   * Write data to Characteristic UUID: `19B10001-E8F2-537E-4F6C-D104768A1214`[cite: 1].
+   * Payload format: Compact JSON string or byte array, e.g., `{"pct":78,"mv":4120}`[cite: 1].
+   * Implement robust auto-reconnection logic (`gatt.connect()` / exponential backoff retry loop) if the BLE connection drops in the background[cite: 1].
+
+4. Multi-Version Permission Architecture:
+   * Dynamically handle runtime permissions across all Android versions:
+     - **Pre-Android 12 (API < 31):** Request `BLUETOOTH`, `BLUETOOTH_ADMIN`, and `ACCESS_FINE_LOCATION` / `ACCESS_COARSE_LOCATION`[cite: 1].
+     - **Android 12+ (API >= 31):** Request runtime `BLUETOOTH_SCAN` and `BLUETOOTH_CONNECT`[cite: 1].
+     - **Android 13+ (API >= 33):** Request `POST_NOTIFICATIONS`[cite: 1].
+
+5. Responsive UI (Any Screen Size & Resolution):
+   * Design an adaptive user interface using Jetpack Compose (or XML `ConstraintLayout` wrapped inside a `ScrollView`) to ensure zero layout clipping or text overlap on small 480x800 displays up to large tablets.
+   * Dashboard components:
+     - Big status indicator: Connected ESP32 device name / Status (Connected / Disconnected / Scanning)[cite: 1].
+     - Live Battery Percentage (%) and Voltage (V)[cite: 1].
+     - Toggle Switch to Start/Stop the Foreground Background Service[cite: 1].
+     - Settings tile to adjust background update interval (10s, 30s, 60s)[cite: 1].
+
+---
+
+### EXPECTED DELIVERABLES
+1. `build.gradle.kts` (App-level configuration with `minSdk = 21`, `targetSdk = 35`, Jetpack Compose / AppCompat dependencies, Coroutines, and Lifecycle Service)[cite: 1].
+2. Native Android Configuration:
+   - `AndroidManifest.xml` (Complete BLE permissions for legacy and modern API levels, Foreground Service declarations with service types, and battery optimization intents)[cite: 1].
+3. Complete Production-Ready Kotlin Code Base:
+   - `PermissionHelper.kt` (Unified runtime permission helper checking device SDK level for legacy location vs modern BLE permissions)[cite: 1].
+   - `BatteryBleService.kt` (Foreground Service logic, `BroadcastReceiver` for battery stats, legacy/modern BLE scanner, GATT connection loop, auto-reconnect, and error handling)[cite: 1].
+   - `MainActivity.kt` & `HomeScreen.kt` (Adaptive Compose UI for all screen sizes, permission request triggers, and service toggle controls)[cite: 1].
